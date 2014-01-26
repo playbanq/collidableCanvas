@@ -24,10 +24,10 @@ function collidableCanvas(canvas, tileSize) {
     var properties = {
         collisionMatrix: {
             value: {
-                'get': function () {
+                get: function () {
                     return collisionMatrix;
                 },
-                'create': function (numRows, numCols, collisionMap) {
+                create: function (numRows, numCols, collisionMap) {
                     var args = Array.prototype.slice.call(arguments);
                     if (args.length === 1) { 
                         collisionMap = numRows;
@@ -53,17 +53,17 @@ function collidableCanvas(canvas, tileSize) {
                         return collisionMatrix;
                     }
                 },
-                'setValue': function (row, column, value) {
+                setValue: function (row, column, value) {
                     if (row <= canvas.grid.rows && column <= canvas.grid.columns) {
                         collisionMatrix[row][column] = value;
                     }
                 },
-                'getValue': function (row, column) {
+                getValue: function (row, column) {
                     if (row <= canvas.grid.rows && column <= canvas.grid.columns) {
                         return collisionMatrix[row][column];
                     }
                 },
-                'check': function (x, y) {
+                check: function (x, y) {
                     var tileSize = canvas.tileSize || canvas.grid.tileSize,
                         row = Math.floor(y/tileSize),
                         column = Math.floor(x/tileSize),
@@ -81,13 +81,13 @@ function collidableCanvas(canvas, tileSize) {
                         collision: tileValue
                     };
                 },
-                'toggle': function (row, column) {
+                toggle: function (row, column) {
                     var matrix = canvas.collisionMatrix.get();
                     matrix[row][column] = !matrix[row][column];
                 }
             }
         },
-        'setSize': {
+        setSize: {
             writable: true,
             value: function (newWidth, newHeight) {
                 canvas.width = newWidth || window.innerWidth;
