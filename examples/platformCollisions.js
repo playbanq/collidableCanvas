@@ -21,16 +21,18 @@ var platforms = [
 ];
 var radius = 10,
     ball = {
-    x: 190,
-    y: 50,
-    box: {
-        left: -radius,
-        right: radius,
-        top: radius,
-        bottom: radius
-    },
-    radius: radius
-};
+        x: 190,
+        y: 50,
+        box: {
+            x: 190,
+            y: 50,
+            left: -radius,
+            right: radius,
+            top: radius,
+            bottom: radius
+        },
+        radius: radius
+    };
 
 (function createPlatforms() {
     platforms.forEach(function (platform) {
@@ -64,36 +66,11 @@ setInterval(function () {
         y: ball.y + deltaY
     };
     // Collision check
-    if (copy.y > ball.y) {
-        var tile = canvas.collisionMatrix.check(copy.x, copy.y + ball.box.bottom);
-        if (!tile.collision) {
-            ball.y = copy.y;
-        } else {
-            ball.y = tile.top - ball.box.bottom;
-        }
-    } else if (copy.y < ball.y) {
-        var tile = canvas.collisionMatrix.check(copy.x, copy.y - ball.box.top);
-        if (!tile.collision) {
-            ball.y = copy.y;
-        } else {
-            ball.y = tile.bottom + ball.box.top;
-        }
-    } 
-    if (copy.x > ball.x) {
-        var tile = canvas.collisionMatrix.check(copy.x + ball.box.right, copy.y);
-        if (!tile.collision) {
-            ball.x = copy.x;
-        } else {
-            ball.x = tile.left - ball.box.right;
-        }
-    } else if (copy.x < ball.x) {
-        var tile = canvas.collisionMatrix.check(copy.x - ball.box.left, copy.y);
-        if (!tile.collision) {
-            ball.x = copy.x;
-        } else {
-            ball.x = tile.right + ball.box.left; console.log(ball.x)
-        }
-    }
+    var allowedPosition = canvas.collisionMatrix.checkVertical(ball.box, copy);
+    ball.y = allowedPosition.y;
+    // ball.x = allowedPosition.x;
+     
+    
     // Drawing
     context.fillStyle = '#aaa';
     context.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI);
@@ -104,8 +81,9 @@ setInterval(function () {
 removeTiles = [[5, 9], [10, 9], [14, 10], [14, 11], [14, 12], [14, 13]];
 setInterval(function () {
     var tile;
-    if ((tile = removeTiles.shift()))
+    if ((tile = removeTiles.shift())) {
         canvas.collisionMatrix.setValue(tile[0], tile[1], false);
+    }
 }, 1000);
 setTimeout(function () {
     deltaX = 7;
