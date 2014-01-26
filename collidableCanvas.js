@@ -17,9 +17,7 @@ function collidableCanvas(canvas, tileSize) {
     }
 
     // Check what parameters were specified, or used the default values
-    tileSize = tileSize || canvas.tileSize;
-    var tileSize = (typeof tileSize === 'number') ? tileSize : 10,
-        context = canvas.getContext('2d'),
+    var context = canvas.getContext('2d'),
         collisionMatrix = [];
 
     // Define the canvas object interface
@@ -66,7 +64,7 @@ function collidableCanvas(canvas, tileSize) {
                     }
                 },
                 'check': function (x, y) {
-                    var tileSize = canvas.grid.tileSize,
+                    var tileSize = canvas.tileSize || canvas.grid.tileSize,
                         row = Math.floor(y/tileSize),
                         column = Math.floor(x/tileSize),
                         rowValue = canvas.collisionMatrix.get()[row],
