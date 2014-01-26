@@ -57,17 +57,19 @@ function collidableCanvas(canvas, tileSize) {
                 'check': function (x, y) {
                     var tileSize = canvas.grid.tileSize,
                         row = Math.floor(y/tileSize),
-                        column = Math.floor(x/tileSize);
+                        column = Math.floor(x/tileSize),
+                        rowValue = canvas.collisionMatrix.get()[row],
+                        tileValue = (rowValue) ? rowValue[column] : undefined;
                     
-                    
-
                     return {
                         top: row * tileSize,
+                        bottom: row * tileSize + tileSize,
+                        right: column * tileSize + tileSize,
                         left: column * tileSize,
                         size: tileSize,
                         row: row,
                         column: column,
-                        collision: canvas.collisionMatrix.get()[row][column]
+                        collision: tileValue
                     };
                 },
                 'toggle': function (row, column) {

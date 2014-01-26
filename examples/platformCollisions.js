@@ -18,10 +18,17 @@ var platforms = [
     [10, 5, 13],
     [15, 5, 13],
 ];
-var ball = {
+var radius = 10,
+    ball = {
     x: 190,
     y: 50,
-    radius: 10
+    box: {
+        left: -radius,
+        right: radius,
+        top: radius,
+        bottom: radius
+    },
+    radius: radius
 };
 
 (function createPlatforms() {
@@ -50,15 +57,24 @@ setInterval(function () {
     // Platforms
     drawPlatforms();
     // Object copy
-    var ballCopy = {
+    var copy = {
         x: ball.x,
-        y: ball.y + 10
+        y: ball.y + 7
     };
     // Collision check
-    if (ballCopy.x <= canvas.width && ballCopy.y <= canvas.height) {
-        var tile = canvas.collisionMatrix.check(ballCopy.x, ballCopy.y);
+    if (copy.y > ball.y) {
+        var tile = canvas.collisionMatrix.check(copy.x, copy.y + ball.box.bottom);
         if (!tile.collision) {
-            ball.y = ballCopy.y;
+            ball.y = copy.y;
+        } else {
+            ball.y = tile.top - ball.box.bottom;
+        }
+    } else {
+        var tile = canvas.collisionMatrix.check(copy.x, copy.y - ball.box.top);
+        if (!tile.collision) {
+            ball.y = copy.y;
+        } else {
+            ball.y = tile.bottom + ball.box.top; console.log(ball.y)
         }
     }
     // Drawing
