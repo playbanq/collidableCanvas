@@ -17,6 +17,7 @@ var platforms = [
     [5, 5, 13],
     [10, 5, 13],
     [15, 5, 13],
+    [14, 10, 13],
 ];
 var radius = 10,
     ball = {
@@ -52,14 +53,15 @@ function drawPlatforms() {
 };
 
 // Render
+var deltaX = 0, deltaY = 7;
 setInterval(function () {
     context.clearRect(0, 0, canvas.width, canvas.height);
     // Platforms
     drawPlatforms();
     // Object copy
     var copy = {
-        x: ball.x,
-        y: ball.y + 7
+        x: ball.x + deltaX,
+        y: ball.y + deltaY
     };
     // Collision check
     if (copy.y > ball.y) {
@@ -69,12 +71,27 @@ setInterval(function () {
         } else {
             ball.y = tile.top - ball.box.bottom;
         }
-    } else {
+    } else if (copy.y < ball.y) {
         var tile = canvas.collisionMatrix.check(copy.x, copy.y - ball.box.top);
         if (!tile.collision) {
             ball.y = copy.y;
         } else {
-            ball.y = tile.bottom + ball.box.top; console.log(ball.y)
+            ball.y = tile.bottom + ball.box.top;
+        }
+    } 
+    if (copy.x > ball.x) {
+        var tile = canvas.collisionMatrix.check(copy.x + ball.box.right, copy.y);
+        if (!tile.collision) {
+            ball.x = copy.x;
+        } else {
+            ball.x = tile.left - ball.box.right;
+        }
+    } else if (copy.x < ball.x) {
+        var tile = canvas.collisionMatrix.check(copy.x - ball.box.left, copy.y);
+        if (!tile.collision) {
+            ball.x = copy.x;
+        } else {
+            ball.x = tile.right + ball.box.left; console.log(ball.x)
         }
     }
     // Drawing
@@ -84,9 +101,15 @@ setInterval(function () {
 }, 33);
 
 // Remove tiles
-removeTiles = [[5, 9], [10, 9], [15, 9]];
+removeTiles = [[5, 9], [10, 9], [14, 10], [14, 11], [14, 12], [14, 13]];
 setInterval(function () {
     var tile;
     if ((tile = removeTiles.shift()))
         canvas.collisionMatrix.setValue(tile[0], tile[1], false);
 }, 1000);
+setTimeout(function () {
+    deltaX = 7;
+}, 3500);
+setTimeout(function () {
+    deltaX = 0;
+}, 6500);
