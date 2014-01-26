@@ -81,17 +81,47 @@ function collidableCanvas(canvas, tileSize) {
                         collision: tileValue
                     };
                 },
+                checkHorizontal: function (box, target) {
+                    var allowedPosition = { x: box.x },
+                        tileSize = canvas.tileSize || canvas.grid.tileSize,
+                        row, column, rowValue, tileValue;
+                        
+                    if (target.x > box.x) {
+                        row = Math.floor(target.y/tileSize);
+                        column = Math.floor((target.x + box.right)/tileSize);
+                        rowValue = canvas.collisionMatrix.get()[row];
+                        tileValue = (rowValue) ? rowValue[column] : undefined;
+
+                        if (!tileValue) {
+                            allowedPosition.x = target.x;
+                        } else {
+                            allowedPosition.x = column * tileSize - box.right;
+                        }
+                    } else if (target.x < box.x) {
+                        row = Math.floor(target.y/tileSize);
+                        column = Math.floor((target.x - box.left)/tileSize);
+                        rowValue = canvas.collisionMatrix.get()[row];
+                        tileValue = (rowValue) ? rowValue[column] : undefined;
+
+                        if (!tileValue) {
+                            allowedPosition.x = target.x;
+                        } else {
+                            allowedPosition.x = column * tileSize + tileSize + box.left; 
+                        }
+                    }
+                    return allowedPosition;
+                },
                 checkVertical: function (box, target) {
-                    var allowedPosition = {},
+                    var allowedPosition = { y: box.y },
                         tileSize = canvas.tileSize || canvas.grid.tileSize,
                         row, column, rowValue, tileValue;
                         
                     if (target.y > box.y) {
-                        // var tile = canvas.collisionMatrix.check(target.x, target.y + box.bottom);
                         row = Math.floor((target.y + box.bottom)/tileSize);
                         column = Math.floor(target.x/tileSize);
                         rowValue = canvas.collisionMatrix.get()[row];
                         tileValue = (rowValue) ? rowValue[column] : undefined;
+
                         if (!tileValue) {
                             allowedPosition.y = target.y;
                         } else {
@@ -102,6 +132,7 @@ function collidableCanvas(canvas, tileSize) {
                         column = Math.floor(target.x/tileSize);
                         rowValue = canvas.collisionMatrix.get()[row];
                         tileValue = (rowValue) ? rowValue[column] : undefined;
+                            
                         if (!tileValue) {
                             allowedPosition.y = target.y;
                         } else {
