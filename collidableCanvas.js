@@ -29,16 +29,27 @@ function collidableCanvas(canvas, tileSize) {
                 'get': function () {
                     return collisionMatrix;
                 },
-                'create': function (collisionMap) {
-                    if (typeof collisionMap === 'object') {
+                'create': function (numRows, numCols, collisionMap) {
+                    var args = Array.prototype.slice.call(arguments);
+                    if (args.length === 1) { 
+                        collisionMap = numRows;
+                        numRows = undefined;
+                    }
+                    var isMap = (collisionMap instanceof Array),
+                        isNumber = (typeof collisionMap === 'number'),
+                        rows = numRows || canvas.grid.rows,
+                        columns = numCols || canvas.grid.columns,
+                        value;
+
+                    if (isMap) {
 
                     } else {
                         // Fill the matrix with false values
-                        for (var row = 0, rows = Math.floor(canvas.height/tileSize); row <= rows; row++) {
-                            collisionMatrix[row] = new Array(columns);
-                            for (var col = 0, columns = Math.floor(canvas.width/tileSize); col <= columns; col++) {
-                                collisionMatrix[row][col] = Math.random() < 
-                                (typeof collisionMap === 'undefined' ? 0 : collisionMap || 0.3);
+                        for (var row = 0; row <= rows; row++) {
+                            collisionMatrix[row] = [];
+                            for (var col = 0; col <= columns; col++) {
+                                value = (isNumber ? Math.random() < collisionMap : false);
+                                collisionMatrix[row][col] = value;
                             }
                         }
                         return collisionMatrix;
