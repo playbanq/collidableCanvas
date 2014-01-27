@@ -109,7 +109,7 @@ setTimeout(function () {
 }, 8000);
 setTimeout(function () {
     radius = ball.radius = ball.box.top = ball.box.bottom = ball.box.left = ball.box.right = 15;
-    ball.box.x +- 5;
+    ball.box.x += 5;
     deltaX = 0;
     deltaY = -7;
 }, 10000);
