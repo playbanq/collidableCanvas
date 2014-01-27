@@ -12,22 +12,10 @@ if (TiledCanvas) {
 }
 
 // PLATFORM GAME OBJECTS
-var platforms = [
-    // row, fromColumn, toColumn
-    [5, 5, 7],
-    [5, 9, 13],
-    [10, 5, 5],
-    [10, 7, 13],
-    [15, 5, 13],
-    [8, 10, 13],
-    [9, 10, 13],
-    [14, 5, 8],
-    [13, 8, 8]
-];
-var radius = 15,
+var radius = 30,
     ball = {
         box: {
-            x: 170,
+            x: 190,
             y: 50,
             left: radius,
             right: radius,
@@ -37,6 +25,18 @@ var radius = 15,
         radius: radius
     };
 
+var platforms = [
+    // row, fromColumn, toColumn
+    [5, 5, 8],
+    [5, 10, 13],
+    [10, 5, 5],
+    [10, 7, 13],
+    [15, 5, 13],
+    [8, 11, 13],
+    [9, 11, 13],
+    [14, 5, 8],
+    [13, 8, 8]
+];
 (function createPlatforms() {
     platforms.forEach(function (platform) {
         for (var row = platform[0], col = platform[1], lastColumn = platform[2]; 
@@ -46,6 +46,8 @@ var radius = 15,
         }
     });
 })();
+
+// RENDER
 function drawPlatforms() {
     platforms.forEach(function (platform) {
         for (var row = platform[0], col = platform[1], lastColumn = platform[2]; 
@@ -56,8 +58,6 @@ function drawPlatforms() {
         }
     });
 };
-
-// Render
 var deltaX = 0, deltaY = 7;
 setInterval(function () {
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -80,10 +80,10 @@ setInterval(function () {
     context.fill();   
 }, 33);
 
-// Remove tiles
-removeTiles = [[5, 7], [5, 9], [9, 10], [9, 11], [9, 12], [10, 12], [14, 8], [14, 7], [14, 6], [0, 0], [10, 7], [10, 5]];
+// REMOVE TILES
+var tile;
+removeTiles = [[5, 8], [5, 10], [9, 11], [9, 12], [10, 12], [14, 8], [14, 7], [14, 6], [0, 0]];
 var remove = setInterval(function () {
-    var tile;
     if ((tile = removeTiles.shift())) {
         canvas.collisionMatrix.setValue(tile[0], tile[1], false);
         return;
@@ -98,18 +98,25 @@ setTimeout(function () {
 }, 4000);
 setTimeout(function () {
     deltaX = 0;
+}, 5000);
+setTimeout(function () {
+    radius = ball.radius = ball.box.top = ball.box.bottom = ball.box.left = ball.box.right = 15; 
+    deltaX = -7;
 }, 6000);
 setTimeout(function () {
-    radius = ball.radius = ball.box.top = ball.box.bottom = ball.box.left = ball.box.right = 15;
-    ball.box.y -= 5; 
-    deltaX = -7;
+    radius = ball.radius = ball.box.top = ball.box.bottom = ball.box.left = ball.box.right = 10;
 }, 7000);
 setTimeout(function () {
-    radius = ball.radius = ball.box.top = ball.box.bottom = ball.box.left = ball.box.right = 10;
+    radius = ball.radius = ball.box.top = ball.box.bottom = ball.box.left = ball.box.right = 15;
 }, 8000);
 setTimeout(function () {
-    radius = ball.radius = ball.box.top = ball.box.bottom = ball.box.left = ball.box.right = 15;
-    ball.box.x += 5;
     deltaX = 0;
     deltaY = -7;
+}, 9000);
+setTimeout(function () {
+    radius = ball.radius = ball.box.top = ball.box.bottom = ball.box.left = ball.box.right = 10;
+    ball.box.x -= 5;
 }, 10000);
+setTimeout(function () {
+    radius = ball.radius = ball.box.top = ball.box.bottom = ball.box.left = ball.box.right = 20;
+}, 11000);
