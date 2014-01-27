@@ -101,7 +101,7 @@ function collidableCanvas(canvas, tileSize) {
                         } else {
                             allowedPosition.x = column * tileSize - box.right;
                         }
-                    } else if (target.x < box.x) {
+                    } else if (target.x <= box.x) {
                         var leftEdge = target.x - box.left;
                         column = Math.floor(leftEdge/tileSize);
                         edgeCollisions = [
@@ -138,7 +138,7 @@ function collidableCanvas(canvas, tileSize) {
                         } else {
                             allowedPosition.y = row * tileSize - box.bottom;
                         }
-                    } else if (target.y < box.y) {
+                    } else if (target.y <= box.y) {
                         var topEdge = target.y - box.top;
                         row = Math.floor(topEdge/tileSize);
                         edgeCollisions = [
