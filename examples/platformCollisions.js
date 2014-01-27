@@ -17,13 +17,15 @@ var platforms = [
     [5, 5, 13],
     [10, 5, 13],
     [15, 5, 13],
+    [8, 10, 13],
     [9, 10, 13],
-    [14, 5, 8]
+    [14, 5, 8],
+    [13, 7, 8]
 ];
-var radius = 10,
+var radius = 15,
     ball = {
         box: {
-            x: 190,
+            x: 180,
             y: 50,
             left: radius,
             right: radius,
@@ -65,10 +67,21 @@ setInterval(function () {
         y: ball.box.y + deltaY
     };
     // Collision check
-    var allowedX = canvas.collisionMatrix.checkHorizontal(ball.box, copy);
-    ball.box.x = copy.x = allowedX.x;
-    allowedY = canvas.collisionMatrix.checkVertical(ball.box, copy);
-    ball.box.y = allowedY.y;
+    var collisions = [
+        canvas.collisionMatrix.check(ball.box.x - ball.box.left + 1, ball.box.y - ball.box.top + 1).collision,
+        canvas.collisionMatrix.check(ball.box.x + ball.box.right -1, ball.box.y - ball.box.top + 1).collision,
+        canvas.collisionMatrix.check(ball.box.x - ball.box.left + 1, ball.box.y + ball.box.bottom - 1).collision, 
+        canvas.collisionMatrix.check(ball.box.x + ball.box.right - 1, ball.box.y + ball.box.bottom - 1).collision
+    ];
+    if (!collisions[1] && !collisions[3]) {
+        var allowedX = canvas.collisionMatrix.checkHorizontal(ball.box, copy);
+        ball.box.x = copy.x = allowedX.x;
+    }
+    if (!collisions[2] && !collisions[3]) {
+        allowedY = canvas.collisionMatrix.checkVertical(ball.box, copy);
+        ball.box.y = allowedY.y;  
+    }
+    
 
     // Drawing
     context.fillStyle = '#aaa';
@@ -77,7 +90,7 @@ setInterval(function () {
 }, 33);
 
 // Remove tiles
-removeTiles = [[5, 9], [9, 10], [9, 11], [9, 12], [10, 12], [14, 8], [14, 7], [14, 6], [0, 0], [10, 6]];
+removeTiles = [[5, 8], [5, 9], [9, 10], [9, 11], [9, 12], [10, 12], [14, 8], [14, 7], [14, 6], [0, 0], [10, 6]];
 var remove = setInterval(function () {
     var tile;
     if ((tile = removeTiles.shift())) {
@@ -90,12 +103,15 @@ setTimeout(function () {
     deltaX = 7;
 }, 3000);
 setTimeout(function () {
+    radius = ball.radius = ball.box.top = ball.box.bottom = ball.box.left = ball.box.right = 10;
+}, 4000);
+setTimeout(function () {
     deltaX = 0;
-}, 5000);
+}, 6000);
 setTimeout(function () {
     deltaX = -7;
-}, 6000);
+}, 7000);
 setTimeout(function () {
     deltaX = 0;
     deltaY = -7;
-}, 9000);
+}, 10000);
