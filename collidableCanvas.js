@@ -69,7 +69,7 @@ function collidableCanvas(canvas, tileSize) {
                         column = Math.floor(x/tileSize),
                         rowValue = canvas.collisionMatrix.get()[row],
                         tileValue = (rowValue) ? rowValue[column] : undefined;
-                    
+                        
                     return {
                         top: row * tileSize,
                         bottom: row * tileSize + tileSize,
@@ -84,26 +84,33 @@ function collidableCanvas(canvas, tileSize) {
                 checkHorizontal: function (box, target) {
                     var allowedPosition = { x: box.x },
                         tileSize = canvas.tileSize || canvas.grid.tileSize,
-                        row, column, rowValue, tileValue;
-                        
-                    if (target.x > box.x) {
-                        row = Math.floor(target.y/tileSize);
-                        column = Math.floor((target.x + box.right)/tileSize);
-                        rowValue = canvas.collisionMatrix.get()[row];
-                        tileValue = (rowValue) ? rowValue[column] : undefined;
+                        collisionMatrix = canvas.collisionMatrix,
+                        column, edgeCollisions;
 
-                        if (!tileValue) {
-                            allowedPosition.x = target.x;
+                    if (target.x > box.x) {
+                        var rightEdge = target.x + box.right;
+                        column = Math.floor(rightEdge/tileSize);
+                        edgeCollisions = [
+                            collisionMatrix.check(rightEdge, box.y - box.top).collision,
+                            collisionMatrix.check(rightEdge, box.y).collision, 
+                            collisionMatrix.check(rightEdge, box.y + box.bottom - 1).collision
+                        ];
+
+                        if (edgeCollisions.indexOf(true) < 0) {
+                            allowedPosition.x = target.x; 
                         } else {
                             allowedPosition.x = column * tileSize - box.right;
                         }
                     } else if (target.x < box.x) {
-                        row = Math.floor(target.y/tileSize);
-                        column = Math.floor((target.x - box.left)/tileSize);
-                        rowValue = canvas.collisionMatrix.get()[row];
-                        tileValue = (rowValue) ? rowValue[column] : undefined;
+                        var leftEdge = target.x - box.left;
+                        column = Math.floor(leftEdge/tileSize);
+                        edgeCollisions = [
+                            collisionMatrix.check(leftEdge, box.y - box.top + 1).collision,
+                            collisionMatrix.check(leftEdge, box.y).collision, 
+                            collisionMatrix.check(leftEdge, box.y + box.bottom - 1).collision
+                        ];
 
-                        if (!tileValue) {
+                        if (edgeCollisions.indexOf(true) < 0) {
                             allowedPosition.x = target.x;
                         } else {
                             allowedPosition.x = column * tileSize + tileSize + box.left; 
@@ -114,26 +121,33 @@ function collidableCanvas(canvas, tileSize) {
                 checkVertical: function (box, target) {
                     var allowedPosition = { y: box.y },
                         tileSize = canvas.tileSize || canvas.grid.tileSize,
-                        row, column, rowValue, tileValue;
+                        collisionMatrix = canvas.collisionMatrix,
+                        row, edgeCollisions;
                         
                     if (target.y > box.y) {
-                        row = Math.floor((target.y + box.bottom)/tileSize);
-                        column = Math.floor(target.x/tileSize);
-                        rowValue = canvas.collisionMatrix.get()[row];
-                        tileValue = (rowValue) ? rowValue[column] : undefined;
+                        var bottomEdge = target.y + box.bottom;
+                        row = Math.floor(bottomEdge/tileSize);
+                        edgeCollisions = [
+                            collisionMatrix.check(box.x - box.left + 1, bottomEdge).collision,
+                            collisionMatrix.check(box.x, bottomEdge).collision, 
+                            collisionMatrix.check(box.x + box.right - 1, bottomEdge).collision
+                        ];
 
-                        if (!tileValue) {
+                        if (edgeCollisions.indexOf(true) < 0) {
                             allowedPosition.y = target.y;
                         } else {
                             allowedPosition.y = row * tileSize - box.bottom;
                         }
                     } else if (target.y < box.y) {
-                        row = Math.floor((target.y - box.top)/tileSize);
-                        column = Math.floor(target.x/tileSize);
-                        rowValue = canvas.collisionMatrix.get()[row];
-                        tileValue = (rowValue) ? rowValue[column] : undefined;
-                            
-                        if (!tileValue) {
+                        var topEdge = target.y - box.top;
+                        row = Math.floor(topEdge/tileSize);
+                        edgeCollisions = [
+                            collisionMatrix.check(box.x - box.left + 1, topEdge).collision,
+                            collisionMatrix.check(box.x, topEdge).collision, 
+                            collisionMatrix.check(box.x + box.right - 1, topEdge).collision
+                        ];
+
+                        if (edgeCollisions.indexOf(true) < 0) {
                             allowedPosition.y = target.y;
                         } else {
                             allowedPosition.y = row * tileSize + tileSize + box.top;
